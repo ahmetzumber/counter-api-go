@@ -1,32 +1,30 @@
 package main
 
 import (
-	"fmt"
-	"path/filepath"
 	"testing"
 
 	"github.com/pact-foundation/pact-go/dsl"
 	"github.com/pact-foundation/pact-go/types"
 )
 
-func TestCounterApi(t *testing.T) {
-
-	pact := &dsl.Pact{
-		Provider: "counter_api",
-		PactDir:  "/Users/ahmet.zumberoglu/Documents/go-work/pacts",
+func createPact() dsl.Pact {
+	return dsl.Pact{
+		Provider: "provider-test",
+		Consumer: "consumer-test",
 	}
 
-	pact.VerifyProvider(t, types.VerifyRequest{
-		ProviderBaseURL: "http://localhost:3000",
-		BrokerURL:       "http://localhost:9292",
-		PactURLs:        []string{filepath.ToSlash(fmt.Sprintf("%s/myconsumer-myprovider.json", pact.PactDir))},
-		StateHandlers: types.StateHandlers{
-			// Setup any state required by the test
-			// in this case, we ensure there is a "user" in the system
-			"Counter API exists": func() error {
-				data.counter = 0
-				return nil
-			},
-		},
+}
+
+func TestCounterApi(t *testing.T) {
+	pact := createPact()
+	_, err := pact.VerifyProvider(t, types.VerifyRequest{
+		ProviderBaseURL:            "http://localhost:8080/",
+		PactURLs:                   []string{"https://zumber.pactflow.io/pacts/provider/provider-test/consumer/consumer-test/version/33bc00-master%2B33bc00.SNAPSHOT.trhqmac184"},
+		PublishVerificationResults: true,
+		ProviderVersion:            "2.0.0",
+		BrokerToken:                "AhT3yO3pFlB6lZpWskVDcA",
 	})
+	if err != nil {
+		t.Fatal(err)
+	}
 }
