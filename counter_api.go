@@ -1,30 +1,30 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 )
 
-type CounterJson struct {
-	counter int `json:counter`
+type Response struct {
+	Data int `json:"counter"`
 }
 
-var data CounterJson
+var count int
 
-func increaseHandler(c *fiber.Ctx) error {
-	data.counter++
-	return c.SendString(fmt.Sprint(data.counter))
+func IncreaseHandler(c *fiber.Ctx) error {
+	count++
+	req := Response{Data: count}
+	return c.Status(fiber.StatusOK).JSON(req)
 }
 
-func decreaseHandler(c *fiber.Ctx) error {
-	data.counter -= 1
-	return c.SendString(fmt.Sprint(data.counter))
+func DecreaseHandler(c *fiber.Ctx) error {
+	count -= 1
+	req := Response{Data: count}
+	return c.Status(fiber.StatusOK).JSON(req)
 }
 
-func displayCounter(c *fiber.Ctx) error {
-	var counterJson string = fmt.Sprintf(`{ "counter": %d }`, data.counter)
-	return c.SendString(counterJson)
+func DisplayHandler(c *fiber.Ctx) error {
+	req := Response{Data: count}
+	return c.Status(fiber.StatusOK).JSON(req)
 }
 
 func main() {
@@ -32,14 +32,14 @@ func main() {
 	app := fiber.New()
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		err := c.SendString("And the API is UP!")
+		err := c.SendString("Hello! Welcome Counter API.")
 		return err
 	})
 
-	app.Get("/display", displayCounter)
-	app.Get("/increase", increaseHandler)
-	app.Get("/decrease", decreaseHandler)
+	app.Get("/display", DisplayHandler)
+	app.Get("/increase", IncreaseHandler)
+	app.Get("/decrease", DecreaseHandler)
 
-	// Listen on PORT 3000
-	app.Listen(":3000")
+	// Listen on PORT 8080
+	app.Listen(":8080")
 }
