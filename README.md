@@ -1,7 +1,7 @@
 # Counter API
 This repository includes consumer driven contract test for provider, unit test and counter api.
 
-## Consumer API
+## Consumer
 - https://github.com/azumber/basic-counter
 
 ## Goal
